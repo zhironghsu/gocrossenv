@@ -15,7 +15,7 @@ jobs:
 
     - name: Extract Git Tag
       id: extract_tag
-      run: echo "::set-output name=TAG::$(echo ${{ github.ref }} | sed -e 's,refs/tags/,,')"      
+      run: echo "TAG=$(echo ${{ github.ref }} | sed -e 's,refs/tags/,,')" >> $GITHUB_OUTPUT      
 
     - name: Build Docker image
       run: docker build -t advantechiiot/gocrossenv:${{ steps.extract_tag.outputs.TAG }} .
