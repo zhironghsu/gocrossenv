@@ -13,8 +13,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Extract Git Tag
+      id: extract_tag
+      run: echo "::set-output name=TAG::$(echo ${{ github.ref }} | sed -e 's,refs/tags/,,')"      
+
     - name: Build Docker image
-      run: docker build . --file Dockerfile -t advantechiiot/gocrossenv:${{ github.ref_name }} .
+      run: docker build -t advantechiiot/gocrossenv:${{ steps.extract_tag.outputs.TAG }} .
 
     - name: Log in to Docker Hub
       env:
@@ -24,10 +28,10 @@ jobs:
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 
     - name: Push Docker image with Git tag
-      run: docker push advantechiiot/gocrossenv:${{ github.ref_name }}
+      run: docker push advantechiiot/gocrossenv:${{ steps.extract_tag.outputs.TAG }}
 
     - name: Tag Docker image as latest
-      run: docker tag advantechiiot/gocrossenv:${{ github.ref_name }} advantechiiot/gocrossenv:latest
+      run: docker tag advantechiiot/gocrossenv:${{ steps.extract_tag.outputs.TAG }} advantechiiot/gocrossenv:latest
 
     - name: Push Docker image with latest tag
       run: docker push advantechiiot/gocrossenv:latest
