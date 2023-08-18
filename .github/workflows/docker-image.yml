@@ -1,0 +1,33 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Build Docker image
+      run: docker build . --file Dockerfile -t advantechiiot/gocrossenv:${{ github.ref }} .
+
+    - name: Log in to Docker Hub
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: |
+        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+
+    - name: Push Docker image with Git tag
+      run: docker push advantechiiot/gocrossenv:${{ github.ref }}
+
+    - name: Tag Docker image as latest
+      run: docker tag advantechiiot/gocrossenv:${{ github.ref }} advantechiiot/gocrossenv:latest
+
+    - name: Push Docker image with latest tag
+      run: docker push advantechiiot/gocrossenv:latest
