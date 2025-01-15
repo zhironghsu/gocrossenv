@@ -1,4 +1,4 @@
-FROM golang:1.20.7-bullseye
+FROM golang:1.23.4-bullseye
 LABEL os=linux
 LABEL arch=amd64
 
