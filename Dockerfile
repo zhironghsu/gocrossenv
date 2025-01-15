@@ -11,7 +11,6 @@ RUN dpkg --add-architecture arm64 \
  && dpkg --add-architecture i386 \
  && apt update \
  && apt install -y --no-install-recommends \
-        upx \
         pkg-config \
         mingw-w64 \
         build-essential \
